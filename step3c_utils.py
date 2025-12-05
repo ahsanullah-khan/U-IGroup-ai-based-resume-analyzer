@@ -30,36 +30,19 @@ def extract_text_from_file(file_content, filename):
         return file_content.decode('utf-8')
 
 def extract_candidate_name(text):
-    """Extract candidate name using spaCy NER with improved logic"""
-    # Clean the text first
-    clean_text = re.sub(r'[^\w\s]', ' ', text[:2000])  # First 2000 chars
-
-    doc = nlp(clean_text)
-
-    # Look for PERSON entities
-    for ent in doc.ents:
-        if ent.label_ == "PERSON":
-            name = ent.text.strip()
-            # Validate name: 2-4 words, no special characters except spaces and hyphens
-            if (2 <= len(name.split()) <= 4 and
-                re.match(r'^[A-Za-z\s\-\.]+$', name) and
-                not any(word.lower() in ['resume', 'cv', 'linkedin', 'email', 'phone'] for word in name.split())):
-                return name
-
-    # Fallback: look for name patterns in first few non-empty lines
+    """Simple name extraction without spacy"""
     lines = [line.strip() for line in text.split('\n') if line.strip()]
+    
     for i, line in enumerate(lines[:10]):  # Check first 10 non-empty lines
         words = line.split()
         if 2 <= len(words) <= 4:
-            # Check if line looks like a name (title case, no digits, not too long)
+            # Check if line looks like a name
             if (all(len(word) >= 2 for word in words) and
                 not any(char.isdigit() for char in line) and
-                len(line) < 50 and
-                not any(keyword in line.lower() for keyword in
-                       ['resume', 'cv', 'curriculum', 'vitae', 'linkedin', 'email', 'phone', 'mobile', '@'])):
+                len(line) < 50):
                 return line
-
-    return "Candidate Name Not Found"
+    
+    return "Candidate"
 
 def extract_years_of_experience(text):
     """Extract years of experience from text with improved accuracy"""
