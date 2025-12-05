@@ -1,0 +1,8 @@
+langchain-groq==0.1.0
+langgraph==0.0.20
+langchain-core==0.1.0
+sentence-transformers==2.2.2
+pypdf2==3.0.1
+python-docx==1.1.0
+plotly==5.17.0
+xlsxwriter==3.1.0
